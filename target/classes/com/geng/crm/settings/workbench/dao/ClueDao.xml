@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0"
+        "http://mabatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geng.crm.settings.workbench.dao.ClueDao">
+	
+	<insert id="saveClue">
+        insert into tbl_clue(
+        id,
+        fullname,
+        appellation,
+        owner,
+        company,
+        job,
+        email,
+        phone,
+        website,
+        mphone,
+        state,
+        source,
+        createBy,
+        createTime,
+        description,
+        contactSummary,
+        nextContactTime,
+        address
+        )
+        values(
+           #{id},
+           #{fullname},
+           #{appellation},
+           #{owner},
+           #{company},
+           #{job},
+           #{email},
+           #{phone},
+           #{website},
+           #{mphone},
+           #{state},
+           #{source},
+           #{createBy},
+           #{createTime},
+           #{description},
+           #{contactSummary},
+           #{nextContactTime},
+           #{address}
+        )
+    </insert>
+  	<select id="getListByCondition" resultType="com.geng.crm.settings.workbench.domain.Clue">
+        select
+       c.id  as  id,
+       c.fullname  as  fullname,
+       u.name  as   owner,
+       c.company as company,
+       c.phone as phone,
+       c.mphone  as mphone,
+       c.state  as  state,
+       c.source  as  source
+        from tbl_clue  c,tbl_user u
+        <where>
+            <if test="1==1">
+                and u.id =c.owner
+            </if>
+            <if test="fullname!=null and fullname!=''">
+                and c.fullname  like '%' #{fullname} '%'
+            </if>
+            <if  test="company!=null and company!=''">
+                and c.company  like '%' #{company} '%'
+            </if>
+            <if test="phone!=null and phone!=''">
+                and c.phone  like '%' #{phone} '%'
+            </if>
+            <if test="source!=null and source!=''">
+                and c.source = #{source}
+            </if>
+            <if test="owner!=null and owner!=''">
+                and u.name  like '%' #{owner} '%'
+            </if>
+            <if test="mphone!=null and mphone!=''">
+                and c.mphone  like '%' #{mphone} '%'
+            </if>
+            <if test="state!=null and state!=''">
+                and c.state = #{state}
+            </if>
+        </where>
+        order by c.createTime desc
+        limit #{skipNum},#{pageSize}
+    </select>
+    <select id="getTotalByCondition" resultType="java.lang.Integer">
+        select
+          count(*)
+        from tbl_clue  c,tbl_user u
+        <where>
+            <if test="1==1">
+                and u.id =c.owner
+            </if>
+            <if test="fullname!=null and fullname!=''">
+                and c.fullname  like '%' #{fullname} '%'
+            </if>
+            <if  test="company!=null and company!=''">
+                and c.company  like '%' #{company} '%'
+            </if>
+            <if test="phone!=null and phone!=''">
+                and c.phone  like '%' #{phone} '%'
+            </if>
+            <if test="source!=null and source!=''">
+                and c.source = #{source}
+            </if>
+            <if test="owner!=null and owner!=''">
+                and u.name  like '%' #{owner} '%'
+            </if>
+            <if test="mphone!=null and mphone!=''">
+                and c.mphone  like '%' #{mphone} '%'
+            </if>
+            <if test="state!=null and state!=''">
+                and c.state = #{state}
+            </if>
+        </where>
+    </select>
+    <select id="getClue" resultType="com.geng.crm.settings.workbench.domain.Clue">
+      select * from tbl_clue where id=#{id}
+    </select>
+    <select id="getClueSuper" resultType="com.geng.crm.settings.workbench.domain.Clue">
+        select
+        c.id    as    id,
+        c.fullname    as    fullname,
+        c.appellation    as     appellation,
+        u.name   as    owner,
+        c.company    as     company,
+        c.job    as    job,
+        c.email    as    email,
+        c.phone    as    phone,
+        c.website    as     website,
+        c.mphone    as    mphone,
+        c.state    as    state,
+        c.source    as    source,
+        c.createBy    as    createBy,
+        c.createTime    as    createTime,
+        c.editBy    as    editBy,
+        c.editTime    as    editTime,
+        c.description    as    description,
+        c.contactSummary    as    contactSummary,
+        c.nextContactTime    as    nextContactTime,
+        c.address    as    address
+        from tbl_clue c,tbl_user u
+        where c.id=#{id}  and  u.id=c.owner
+    </select>
+    <select id="getID" resultType="java.lang.String">
+        select owner from tbl_clue where id=#{id}
+    </select>
+    <update id="updateClue">
+        update tbl_clue
+        set
+        fullname=#{fullname},
+        appellation=#{appellation},
+        owner=#{owner},
+        company=#{company},
+        job=#{job},
+        email=#{email},
+        phone=#{phone},
+        website=#{website},
+        mphone=#{mphone},
+        state=#{state},
+        source=#{source},
+        editBy=#{editBy},
+        editTime=#{editTime},
+        description=#{description},
+        contactSummary=#{contactSummary},
+        nextContactTime=#{nextContactTime},
+        address=#{address}
+        where id=#{id}
+
+    </update>
+    <delete id="deleteClue">
+        delete  from tbl_clue
+        where  id in
+        <foreach collection="array" item="s" open="(" close=")" separator=",">
+            #{s}
+        </foreach>
+    </delete>
+    <delete id="deleteClueS">
+        delete  from tbl_clue
+        where  id=#{clueId}
+    </delete>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

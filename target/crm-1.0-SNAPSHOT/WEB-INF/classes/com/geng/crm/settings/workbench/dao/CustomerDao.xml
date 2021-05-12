@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geng.crm.settings.workbench.dao.CustomerDao">
+	<select id="getCustomerByName" resultType="com.geng.crm.settings.workbench.domain.Customer">
+        select * from tbl_customer where name=#{company}
+    </select>
+  	<insert id="saveCustomer">
+        insert into tbl_customer(
+         id,
+         owner,
+         name,
+         website,
+         phone,
+         createBy,
+         createTime,
+         editBy,
+         editTime,
+         contactSummary,
+         nextContactTime,
+         description,
+         address
+        )
+        values(
+         #{id},
+         #{owner},
+         #{name},
+         #{website},
+         #{phone},
+         #{createBy},
+         #{createTime},
+         #{editBy},
+         #{editTime},
+         #{contactSummary},
+         #{nextContactTime},
+         #{description},
+         #{address}
+        )
+    </insert>
+    <select id="getCustomerList" resultType="com.geng.crm.settings.workbench.domain.Customer">
+        select
+        c.id   as id,
+        u.name   as owner,
+        c.name   as name,
+        c.website   as website,
+        c.phone   as phone,
+        c.createBy   as createBy,
+        c.createTime   as createTime,
+        c.editBy   as editBy,
+        c.editTime   as editTime,
+        c.contactSummary   as contactSummary,
+        c.nextContactTime   as nextContactTime,
+        c.description   as description,
+        c.address   as address
+        from tbl_customer c,tbl_user u
+        <where>
+            <if test="1==1">
+                c.owner=u.id
+            </if>
+           <if test="name!=null and name!=''">
+               and c.name like '%' #{name} '%'
+           </if>
+            <if test="website!=null and website!=''">
+               and c.website like '%' #{website} '%'
+            </if>
+            <if test="owner!=null and owner!=''">
+                and u.name like '%' #{owner} '%'
+            </if>
+            <if test="phone!=null and phone!=''">
+                and c.phone like '%' #{phone} '%'
+            </if>
+        </where>
+        order by c.createTime desc
+        limit #{skipNum},#{pageSize}
+    </select>
+    <select id="getTotal" resultType="java.lang.Integer">
+        select
+        count(*)
+        from tbl_customer c,tbl_user u
+        <where>
+            <if test="1==1">
+                c.owner=u.id
+            </if>
+            <if test="name!=null and name!=''">
+                and c.name like '%' #{name} '%'
+            </if>
+            <if test="website!=null and website!=''">
+                and c.website like '%' #{website} '%'
+            </if>
+            <if test="owner!=null and owner!=''">
+                and u.name like '%' #{owner} '%'
+            </if>
+            <if test="phone!=null and phone!=''">
+                and c.phone like '%' #{phone} '%'
+            </if>
+        </where>
+    </select>
+    <select id="getCustomer" resultType="com.geng.crm.settings.workbench.domain.Customer">
+        select * from tbl_customer where id=#{id}
+    </select>
+    <update id="updateCustomer">
+        update tbl_customer set
+        owner=#{owner},
+        name=#{name},
+        website=#{website},
+        phone=#{phone},
+        editBy=#{editBy},
+        editTime=#{editTime},
+        contactSummary=#{contactSummary},
+        nextContactTime=#{nextContactTime},
+        description=#{description},
+        address=#{address}
+        where id=#{id}
+
+    </update>
+    <delete id="deleteCustomerList">
+        delete from tbl_customer
+        where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="getCustomerName" resultType="java.lang.String">
+        select name from tbl_customer where name like '%' #{name} '%'
+    </select>
+    <select id="getCustomerECharts" resultType="java.util.Map">
+        select  cust.name as name,coun(*) as value
+        from tbl_customer cust,tbl_contacts cont
+        where cont.customerId=cust.id
+        group by cust.name
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

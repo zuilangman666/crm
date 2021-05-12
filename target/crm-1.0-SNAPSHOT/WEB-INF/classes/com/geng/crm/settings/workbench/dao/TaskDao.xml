@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0"
+        "http://mabatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geng.crm.settings.workbench.dao.TaskDao">
+    <insert id="saveTask">
+        insert into tbl_task(
+        id,
+        owner,
+        topic,
+        endDate,
+        startDate,
+        contactsId,
+        taskStage,
+        priority,
+        description,
+        repeatType,
+        noticeType,
+        createTime,
+        createBy,
+        editTime,
+        editBy
+        )
+        values (
+        #{id},
+        #{owner},
+        #{topic},
+        #{endDate},
+        #{startDate},
+        #{contactsId},
+        #{taskStage},
+        #{priority},
+        #{description},
+        #{repeatType},
+        #{noticeType},
+        #{createTime},
+        #{createBy},
+        #{editTime},
+        #{editBy}
+        )
+    </insert>
+<select id="getTotal" resultType="java.lang.Integer">
+ select count(*)
+    from tbl_task  t,tbl_contacts c,tbl_user u
+    <where>
+        <if test="1==1">
+            c.id=t.contactsId
+        </if>
+        <if test="1==1">
+            and u.id=t.owner
+        </if>
+        <if test="owner!=null and owner!=''">
+            and u.name like '%' #{owner} '%'
+        </if>
+        <if test="endDate!=null and endDate!=''">
+            and t.endDate &lt; #{endDate}
+        </if>
+        <if test="priority!=null and priority!=''">
+            and t.priority =#{priority}
+        </if>
+        <if test="taskStage!=null and taskStage!=''">
+            and t.taskStage=#{taskStage}
+        </if>
+    </where>
+</select>
+    <select id="getList" resultType="com.geng.crm.settings.workbench.domain.Task">
+        select
+        t.id  as id,
+        u.name  as owner,
+        t.topic  as topic,
+        t.endDate  as endDate,
+        t.startDate  as startDate,
+        c.fullname  as contactsId,
+        t.taskStage  as taskStage,
+        t.priority  as priority,
+        t.description  as description,
+        t.repeatType  as repeatType,
+        t.noticeType  as noticeType,
+        t.createTime  as createTime,
+        t.createBy  as createBy,
+        t.editTime  as editTime,
+        t.editBy  as editBy
+        from tbl_task  t,tbl_contacts c,tbl_user u
+        <where>
+            <if test="1==1">
+                c.id=t.contactsId
+            </if>
+            <if test="1==1">
+               and u.id=t.owner
+            </if>
+            <if test="owner!=null and owner!=''">
+                and u.name like '%' #{owner} '%'
+            </if>
+            <if test="endDate!=null and endDate!=''">
+                and t.endDate &lt; #{endDate}
+            </if>
+            <if test="priority!=null and priority!=''">
+                and t.priority =#{priority}
+            </if>
+            <if test="taskStage!=null and taskStage!=''">
+                and t.taskStage=#{taskStage}
+            </if>
+        </where>
+        limit #{skipNum},#{pageSize}
+    </select>
+    <delete id="deleteTask">
+        delete from tbl_task  where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="getTask" resultType="com.geng.crm.settings.workbench.domain.Task">
+        select
+        *
+        from tbl_task
+        where id=#{id}
+    </select>
+    <update id="updateTask" >
+        update tbl_task
+        set
+        owner=#{owner},
+        topic=#{topic},
+        endDate=#{endDate},
+        startDate=#{startDate},
+        contactsId=#{contactsId},
+        taskStage=#{taskStage},
+        priority=#{priority},
+        description=#{description},
+        repeatType=#{repeatType},
+        noticeType=#{noticeType},
+        editTime=#{editTime},
+        editBy=#{editBy}
+        where id=#{id}
+    </update>
+    <select id="getTaskS" resultType="com.geng.crm.settings.workbench.domain.Task">
+        select
+        t.id  as id,
+        u.name  as owner,
+        t.topic  as topic,
+        t.endDate  as endDate,
+        t.startDate  as startDate,
+        c.fullname  as contactsId,
+        t.taskStage  as taskStage,
+        t.priority  as priority,
+        t.description  as description,
+        t.repeatType  as repeatType,
+        t.noticeType  as noticeType,
+        t.createTime  as createTime,
+        t.createBy  as createBy,
+        t.editTime  as editTime,
+        t.editBy  as editBy
+        from tbl_task  t,tbl_contacts c,tbl_user u
+         where u.id=t.owner and c.id=t.contactsId and t.id=#{id}
+    </select>
+</mapper>

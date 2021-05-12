@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geng.crm.settings.workbench.dao.ContactsActivityRelationDao">
+	
+  	<insert id="saveRelation">
+        insert into tbl_contacts_activity_relation(
+        id,
+        contactsId,
+        activityId
+        )
+        values (
+        #{id},
+        #{contactsId},
+        #{activityId}
+        )
+    </insert>
+        <delete id="deleteRelation">
+                delete from tbl_contacts_activity_relation
+                where contactsId in
+                <foreach collection="array" item="id" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+        </delete>
+    <select id="getRelationList" resultType="com.geng.crm.settings.workbench.domain.Activity">
+        select
+        a.id    as  id,
+        u.name    as  owner,
+        a.name    as  name,
+        a.startDate    as  startDate,
+        a.endDate    as  endDate,
+        a.cost    as  cost,
+        a.description    as  descriptio,
+        a.createTime    as  createTime,
+        a.createBy    as  createBy,
+        a.editTime    as  editTime,
+        a.editBy    as  editBy
+        from  tbl_activity a,tbl_user u,tbl_contacts_activity_relation c
+        where c.contactsId=#{contactsId} and  c.activityId=a.id  and  a.owner=u.id
+
+    </select>
+    <select id="search" resultType="com.geng.crm.settings.workbench.domain.Activity">
+        select
+        a.id   as id,
+        u.name  as  owner,
+        a.name  as  name,
+        a.startDate  as  startDate,
+        a.endDate  as  endDate,
+        a.cost  as  cost,
+        a.description  as  description,
+        a.createTime  as  createTime,
+        a.createBy  as  createBy,
+        a.editTime  as  editTime,
+        a.editBy  as  editBy
+        from tbl_activity a,tbl_user u
+        where a.name like '%' #{arg0} '%'
+        and u.id=a.owner
+        and a.id not in (
+        select activityId from tbl_contacts_activity_relation where contactsId=#{arg1}
+        )
+    </select>
+    <insert id="create">
+        insert into tbl_contacts_activity_relation(contactsId,activityId,id) values (#{arg0},#{arg1},#{arg2})
+    </insert>
+    <delete id="delete">
+        delete from tbl_contacts_activity_relation where contactsId=#{arg0} and  activityId=#{arg1}
+    </delete>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geng.crm.settings.workbench.dao.TranDao">
+	<insert id="saveTran">
+        insert into tbl_tran(
+        id,
+        owner,
+        money,
+        name,
+        expectedDate,
+        customerId,
+        stage,
+        type,
+        source,
+        activityId,
+        contactsId,
+        createBy,
+        createTime,
+        editBy,
+        editTime,
+        description,
+        contactSummary,
+        nextContactTime
+        )
+        values (
+        #{id},
+        #{owner},
+        #{money},
+        #{name},
+        #{expectedDate},
+        #{customerId},
+        #{stage},
+        #{type},
+        #{source},
+        #{activityId},
+        #{contactsId},
+        #{createBy},
+        #{createTime},
+        #{editBy},
+        #{editTime},
+        #{description},
+        #{contactSummary},
+        #{nextContactTime}
+        )
+    </insert>
+  	<select id="getTranList" resultType="com.geng.crm.settings.workbench.domain.Tran">
+            select
+            t.id    as   id,
+            u.name    as   owner,
+            t.money    as   money,
+            t.name    as   name,
+            t.expectedDate    as   expectedDate,
+            cust.name    as   customerId,
+            t.stage    as   stage,
+            t.type    as   type,
+            t.source    as   source,
+            t.activityId    as   activityId,
+            cont.fullname    as   contactsId,
+            t.createBy    as   createBy,
+            t.createTime    as   createTime,
+            t.editBy    as   editBy,
+            t.editTime    as   editTime,
+            t.description    as   description,
+            t.contactSummary    as   contactSummary,
+            t.nextContactTime    as   nextContactTime
+            from tbl_tran t,tbl_user u,tbl_customer  cust,tbl_contacts cont
+            <where>
+                 <if test="1==1">
+                         t.customerId=cust.id
+                 </if>
+                 <if test="1==1">
+                        and t.contactsId=cont.id
+                </if>
+                <if test="1==1">
+                        and t.owner=u.id
+                </if>
+                <if test="name!=null and name!=''">
+                        and t.name like '%' #{name} '%'
+                </if>
+                <if test="stage!=null and stage!=''">
+                        and t.stage =#{stage}
+                </if>
+                    <if test="type!=null and type!=''">
+                          and t.type=#{type}
+                    </if>
+                    <if test="source!=null and source!=''">
+                             and t.source = #{source}
+                    </if>
+                    <if test="owner!=null and owner!=''">
+                           and u.name like '%' #{owner} '%'
+                    </if>
+            </where>
+            order by t.createTime desc
+            limit #{skipNum},#{pageSize}
+    </select>
+    <select id="getTotal" resultType="java.lang.Integer">
+        select
+        count(*)
+        from tbl_tran t,tbl_user u,tbl_customer  cust,tbl_contacts cont
+        <where>
+            <if test="1==1">
+                t.customerId=cust.id
+            </if>
+            <if test="1==1">
+                and t.contactsId=cont.id
+            </if>
+            <if test="1==1">
+                and t.owner=u.id
+            </if>
+            <if test="name!=null and name!=''">
+                and t.name like '%' #{name} '%'
+            </if>
+            <if test="stage!=null and stage!=''">
+                and t.stage =#{stage}
+            </if>
+            <if test="type!=null and type!=''">
+                and t.type=#{type}
+            </if>
+            <if test="source!=null and source!=''">
+                and t.source = #{source}
+            </if>
+            <if test="owner!=null and owner!=''">
+                and u.name like '%' #{owner} '%'
+            </if>
+        </where>
+    </select>
+    <delete id="deleteContacts">
+        delete from tbl_tran where id
+        in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="getTran" resultType="com.geng.crm.settings.workbench.domain.Tran">
+          select
+            t.id    as   id,
+            t.owner    as   owner,
+            t.money    as   money,
+            t.name    as   name,
+            t.expectedDate    as   expectedDate,
+            cust.name    as   customerId,
+            t.stage    as   stage,
+            t.type    as   type,
+            t.source    as   source,
+            t.activityId    as   activityId,
+            t.contactsId    as   contactsId,
+            t.createBy    as   createBy,
+            t.createTime    as   createTime,
+            t.editBy    as   editBy,
+            t.editTime    as   editTime,
+            t.description    as   description,
+            t.contactSummary    as   contactSummary,
+            t.nextContactTime    as   nextContactTime
+        from tbl_tran t ,tbl_customer cust
+        where t.id=#{id}
+        and cust.id=t.customerId
+    </select>
+    <select id="detail" resultType="com.geng.crm.settings.workbench.domain.Tran">
+     select
+            t.id    as   id,
+            u.name    as   owner,
+            t.money    as   money,
+            t.name    as   name,
+            t.expectedDate    as   expectedDate,
+            cust.name    as   customerId,
+            t.stage    as   stage,
+            t.type    as   type,
+            t.source    as   source,
+            a.name    as   activityId,
+            cont.fullname    as   contactsId,
+            t.createBy    as   createBy,
+            t.createTime    as   createTime,
+            t.editBy    as   editBy,
+            t.editTime    as   editTime,
+            t.description    as   description,
+            t.contactSummary    as   contactSummary,
+            t.nextContactTime    as   nextContactTime
+        from tbl_tran t ,tbl_customer cust,tbl_contacts cont,tbl_user u,tbl_activity a
+        where t.id=#{id}
+        and cust.id=t.customerId
+        and u.id=t.owner
+        and cont.id=t.contactsId
+        and a.id=t.activityId
+    </select>
+    <update id="updateTran">
+        update tbl_tran set
+        owner=#{owner},
+        money=#{money},
+        name=#{name},
+        expectedDate=#{expectedDate},
+        customerId=#{customerId},
+        stage=#{stage},
+        type=#{type},
+        source=#{source},
+        activityId=#{activityId},
+        contactsId=#{contactsId},
+        editBy=#{editBy},
+        editTime=#{editTime},
+        description=#{description},
+        contactSummary=#{contactSummary},
+        nextContactTime=#{nextContactTime}
+        where id=#{id}
+    </update>
+    <update id="updateTranS">
+        update tbl_tran set
+        stage=#{stage},
+        editBy=#{createBy},
+        editTime=#{createTime}
+        where id=#{tranId}
+    </update>
+    <select id="getTotalS" resultType="java.lang.Integer">
+        select count(*) from tbl_tran
+    </select>
+    <select id="getDataList" resultType="java.util.Map">
+        select count(*)  as value  ,stage as  name from  tbl_tran  group by  stage
+    </select>
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0"
+        "http://mabatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geng.crm.settings.dao.DicValueDao">
+    <select id="getValueByCode" resultType="com.geng.crm.settings.domain.DicValue">
+        select * from tbl_dic_value where typeCode=#{str} order by   orderNo
+    </select>
+</mapper>

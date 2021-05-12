@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geng.crm.settings.workbench.dao.ContactsDao">
+	<select id="getContactsListSS" resultType="com.geng.crm.settings.workbench.domain.Contacts">
+        select * from tbl_contacts where fullname like '%' #{fullname} '%'
+    </select>
+  	<insert id="saveContact">
+        insert into tbl_contacts(
+        id,
+        owner,
+        source,
+        customerId,
+        fullname,
+        appellation,
+        email,
+        mphone,
+        job,
+        createBy,
+        createTime,
+        description,
+        contactSummary,
+        nextContactTime,
+        address
+        )
+        values (
+        #{id},
+        #{owner},
+        #{source},
+        #{customerId},
+        #{fullname},
+        #{appellation},
+        #{email},
+        #{mphone},
+        #{job},
+        #{createBy},
+        #{createTime},
+        #{description},
+        #{contactSummary},
+        #{nextContactTime},
+        #{address}
+        )
+    </insert>
+        <select id="getContactsList" resultType="com.geng.crm.settings.workbench.domain.Contacts">
+            select
+            con.id   as  id,
+            u.name   as  owner,
+            con.source   as  source,
+            cust.name   as  customerId,
+            con.fullname   as  fullname,
+            con.appellation   as  appellation,
+            con.email   as  email,
+            con.mphone   as  mphone,
+            con.job   as  job,
+            con.birth   as  birth,
+            con.createBy   as  createBy,
+            con.createTime   as  createTime,
+            con.editBy   as  editBy,
+            con.editTime   as  editTime,
+            con.description   as  description,
+            con.contactSummary   as  contactSummary,
+            con.nextContactTime   as  nextContactTime,
+            con.address   as  address
+            from tbl_contacts con,tbl_customer cust,tbl_user u
+            <where>
+                <if test="1==1">
+                    and con.customerId=cust.id
+                </if>
+                <if test="1==1">
+                    and u.id=con.owner
+                </if>
+                <if test="birth!=null and birth!=''">
+                    and con.birth &gt; #{birth}
+                </if>
+                <if test="fullname!=null and fullname!=''">
+                    and con.fullname like '%' #{fullname} '%'
+                </if>
+                <if test="source!=null and source!=''">
+                    and con.source =#{source}
+                </if>
+                <if test="owner!=null and owner!=''">
+                    and  u.name like '%' #{owner} '%'
+                </if>
+                <if test="customer!=null and customer!=''">
+                    and cust.name like '%' #{customer} '%'
+                </if>
+            </where>
+            order by con.createTime  desc
+            limit #{skipNum},#{pageSize}
+        </select>
+        <select id="getTotal" resultType="java.lang.Integer">
+                select
+                 count(*)
+                from tbl_contacts con,tbl_customer cust,tbl_user u
+                <where>
+                    <if test="1==1">
+                        and con.customerId=cust.id
+                    </if>
+                    <if test="1==1">
+                        and u.id=con.owner
+                    </if>
+                        <if test="birth!=null and birth!=''">
+                                and con.birth &gt; #{birth}
+                        </if>
+                        <if test="fullname!=null and fullname!=''">
+                                and con.fullname like '%' #{fullname} '%'
+                        </if>
+                        <if test="source!=null and source!=''">
+                                and con.source =#{source}
+                        </if>
+                        <if test="owner!=null and owner!=''">
+                                and  u.name like '%' #{owner} '%'
+                        </if>
+                        <if test="customer!=null and customer!=''">
+                                and cust.name like '%' #{customer} '%'
+                        </if>
+                </where>
+        </select>
+    <select id="getContacts" resultType="com.geng.crm.settings.workbench.domain.Contacts">
+        select
+        con.id      as id,
+        con.owner       as owner,
+        con.source      as source,
+        cust.name     as customerId,
+        con.fullname        as fullname,
+        con.appellation     as appellation,
+        con.email       as email,
+        con.mphone      as mphone,
+        con.job     as job,
+        con.birth       as birth,
+        con.createBy        as createBy,
+        con.createTime      as createTime,
+        con.editBy      as editBy,
+        con.editTime        as editTime,
+        con.description     as description,
+        con.contactSummary      as contactSumm,
+        con.nextContactTime     as nextContact,
+        con.address     as address
+        from tbl_contacts con,tbl_customer cust
+        where con.customerId=cust.id and con.id=#{id}
+
+    </select>
+    <select id="getContactsSSS" resultType="com.geng.crm.settings.workbench.domain.Contacts">
+        select
+        con.id      as id,
+        u.name       as owner,
+        con.source      as source,
+        cust.name     as customerId,
+        con.fullname        as fullname,
+        con.appellation     as appellation,
+        con.email       as email,
+        con.mphone      as mphone,
+        con.job     as job,
+        con.birth       as birth,
+        con.createBy        as createBy,
+        con.createTime      as createTime,
+        con.editBy      as editBy,
+        con.editTime        as editTime,
+        con.description     as description,
+        con.contactSummary      as contactSumm,
+        con.nextContactTime     as nextContact,
+        con.address     as address
+        from tbl_contacts con,tbl_customer cust,tbl_user u
+        where con.customerId=cust.id and con.id=#{id} and u.id=con.owner
+
+    </select>
+    <update id="updateContacts">
+        update tbl_contacts
+        set
+        owner=#{owner},
+        source=#{source},
+        customerId =#{customerId},
+        fullname=#{fullname},
+        appellation=#{appellation},
+        email=#{email},
+        mphone=#{mphone},
+        job=#{job},
+        birth=#{birth},
+        editBy=#{editBy},
+        editTime=#{editTime},
+        description=#{description},
+        contactSummary=#{contactSummary},
+        nextContactTime=#{nextContactTime},
+        address=#{address}
+        where id=#{id}
+
+    </update>
+    <delete id="deleteContacts">
+        delete from tbl_contacts
+        where id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="showContacts" resultType="com.geng.crm.settings.workbench.domain.Contacts">
+        select
+          *
+        from tbl_contacts
+        where customerId=#{customerId}
+    </select>
+    <delete id="deleteContact">
+        delete from tbl_contacts where id=#{contactsId}
+    </delete>
+    <select id="getContactsListS" resultType="com.geng.crm.settings.workbench.domain.Contacts">
+        select
+        con.id      as id,
+        u.name       as owner,
+        con.source      as source,
+        cust.name     as customerId,
+        con.fullname        as fullname,
+        con.appellation     as appellation,
+        con.email       as email,
+        con.mphone      as mphone,
+        con.job     as job,
+        con.birth       as birth,
+        con.createBy        as createBy,
+        con.createTime      as createTime,
+        con.editBy      as editBy,
+        con.editTime        as editTime,
+        con.description     as description,
+        con.contactSummary      as contactSumm,
+        con.nextContactTime     as nextContact,
+        con.address     as address
+        from tbl_contacts con,tbl_customer cust,tbl_user u
+        where  u.id=con.owner
+        and cust.name =  #{arg0}
+        and cust.id=con.customerId
+        and  con.fullname like '%' #{arg1} '%'
+    </select>
+   <select id="getContactS" resultType="com.geng.crm.settings.workbench.domain.Contacts">
+       select * from tbl_contacts  where id=#{contactsId}
+   </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

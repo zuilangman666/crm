@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0"
+        "http://mabatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.geng.crm.settings.workbench.dao.ActivityDao">
+   <insert id="saveActivity">
+       insert into tbl_activity(
+       id,
+       owner,
+       name,
+       startDate,
+       endDate,
+       cost,
+       description,
+       createTime,
+       createBy
+       )
+       values(
+       #{id},
+       #{owner},
+       #{name},
+       #{startDate},
+       #{endDate},
+       #{cost},
+       #{description},
+       #{createTime},
+       #{createBy}
+       )
+   </insert>
+    <select id="getActivityListByCondition" resultType="com.geng.crm.settings.workbench.domain.Activity">
+        select a.id as id,a.name as name,a.startDate as startDate,a.endDate as endDate,u.name as owner
+        from tbl_activity a,tbl_user u
+        <where>
+            <if test="1==1">
+                u.id=a.owner
+            </if>
+            <if test="owner!=null and  owner!=''">
+               and u.name like '%' #{owner} '%'
+            </if>
+            <if test="name!=null and name!=''">
+                and a.name like '%' #{name} '%'
+            </if>
+            <if test="startDate!=null and startDate!=''">
+                and a.startDate &gt; #{startDate}
+            </if>
+            <if test="endDate!=null and endDate!=''">
+                and a.endDate &lt; #{endDate}
+            </if>
+        </where>
+        order by a.createTime desc
+        limit #{skipNum},#{pageSize}
+    </select>
+    <select id="getActivityListNum" resultType="java.lang.Integer">
+        select count(*)
+        from tbl_activity a,tbl_user u
+        <where>
+            <if test="1==1">
+                u.id=a.owner
+            </if>
+            <if test="owner!=null and  owner!=''">
+                and u.name like '%' #{owner} '%'
+            </if>
+            <if test="name!=null and name!=''">
+                and a.name like '%' #{name} '%'
+            </if>
+            <if test="startDate!=null and startDate!=''">
+                and a.startDate &gt; #{startDate}
+            </if>
+            <if test="endDate!=null and endDate!=''">
+                and a.endDate &lt; #{endDate}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteCount">
+        delete  from tbl_activity
+        where  id in
+        <foreach collection="array" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="getActivity" resultType="com.geng.crm.settings.workbench.domain.Activity">
+        select * from tbl_activity where id=#{id}
+    </select>
+    <update id="updateActivity">
+        update tbl_activity set
+        owner=#{owner},
+        name=#{name},
+        startDate=#{startDate},
+        endDate=#{endDate},
+        cost=#{cost},
+        description=#{description},
+        editTime=#{editTime},
+        editBy=#{editBy}
+        where id=#{id}
+
+    </update>
+    <select id="solveDetail" resultType="com.geng.crm.settings.workbench.domain.Activity">
+        select
+        a.id   as id,
+        u.name    as  owner,
+        a.name    as   name,
+        a.startDate    as   startDate,
+        a.endDate    as   endDate,
+        a.cost    as  cost,
+        a.description    as  description,
+        a.createTime    as   createTime,
+        a.createBy    as    createBy,
+        a.editTime    as   editTime,
+        a.editBy    as  editBy
+        from tbl_activity a,tbl_user u
+        where a.owner=u.id and a.id=#{id}
+    </select>
+    <select id="getActivityList" resultType="com.geng.crm.settings.workbench.domain.Activity">
+        select
+        a.id  as id,
+        u.name  as owner,
+        a.name  as name,
+        a.startDate  as startDate,
+        a.endDate  as endDate,
+        a.cost  as cost,
+        a.description  as description,
+        a.createTime  as createTime,
+        a.createBy  as createBy,
+        a.editTime  as editTime,
+        a.editBy  as editBy
+        from tbl_activity a,tbl_user u
+        where u.id=a.owner  and  a.name like '%' #{name} '%'
+    </select>
+</mapper>

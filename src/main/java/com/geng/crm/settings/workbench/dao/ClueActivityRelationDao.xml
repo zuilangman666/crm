@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geng.crm.settings.workbench.dao.ClueActivityRelationDao">
+	
+	<select id="getActivityList" resultType="com.geng.crm.settings.workbench.domain.Activity">
+        select
+           car.id  as id,
+           u.name   as  owner,
+           a.name     as  name,
+           a.startDate    as   startDate,
+           a.endDate   as  endDate,
+           a.cost   as  cost,
+           a.description   as  description,
+           a.createTime     as    createTime,
+           a.createBy     as    createBy,
+           a.editTime     as    editTime,
+           a.editBy     as    editBy
+
+         from tbl_activity a ,tbl_clue c  ,tbl_clue_activity_relation  car,tbl_user  u
+         where  a.id=car.activityId
+         and  c.id=car.clueId
+         and u.id=a.owner
+         and c.id=#{id}
+    </select>
+    <delete id="deleteRelation">
+        delete from tbl_clue_activity_relation where id=#{id}
+    </delete>
+  	<select id="getActivityListSS" resultType="com.geng.crm.settings.workbench.domain.Activity">
+        select
+        a.id  as id,
+        u.name as owner,
+        a.name  as name,
+        a.startDate   as startDate,
+        a.endDate  as endDate,
+        a.cost  as cost,
+        a.description   as description,
+        a.createTime  as  createTime,
+        a.createBy  as  createBy,
+        a.editTime  as  editTime,
+        a.editBy  as  editBy
+        from tbl_activity a ,tbl_user  u
+        where u.id=a.owner
+        and   a.name like '%' #{arg0} '%'
+        and   a.id  not in(
+        select activityId from  tbl_clue_activity_relation where
+               clueId=#{arg1}
+        )
+
+    </select>
+    <insert id="createRelation">
+        insert into tbl_clue_activity_relation(id,clueId,activityId)
+        values (#{arg0},#{arg1},#{arg2})
+    </insert>
+    <select id="getActivityListSSS" resultType="com.geng.crm.settings.workbench.domain.Activity">
+        select
+        a.id  as id,
+        u.name as owner,
+        a.name  as name,
+        a.startDate   as startDate,
+        a.endDate  as endDate,
+        a.cost  as cost,
+        a.description   as description,
+        a.createTime  as  createTime,
+        a.createBy  as  createBy,
+        a.editTime  as  editTime,
+        a.editBy  as  editBy
+        from tbl_activity a ,tbl_user  u,tbl_clue_activity_relation car,tbl_clue c
+        where u.id=a.owner
+        and   car.clueId=c.id
+        and   car.activityId=a.id
+        and   car.clueId=#{arg1}
+        and   a.name like '%' #{arg0} '%'
+
+
+    </select>
+    <select id="getRelationList" resultType="com.geng.crm.settings.workbench.domain.ClueActivityRelation">
+        select * from tbl_clue_activity_relation where clueId=#{clueId}
+    </select>
+    <delete id="deleteRelationS">
+        delete from tbl_clue_activity_relation where clueId=#{clueId}
+    </delete>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

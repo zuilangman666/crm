@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.geng.crm.settings.workbench.dao.CustomerRemarkDao">
+	<insert id="saveRemark">
+        insert into tbl_customer_remark(
+        id,
+        noteContent,
+        createBy,
+        createTime,
+        editFlag,
+        customerId
+        )
+        values (
+        #{id},
+        #{noteContent},
+        #{createBy},
+        #{createTime},
+        #{editFlag},
+        #{customerId}
+        )
+    </insert>
+        <delete id="deleteRemarkList">
+            delete from tbl_customer_remark
+            where customerId in
+            <foreach collection="array" item="id" open="(" close=")" separator=",">
+                #{id}
+            </foreach>
+        </delete>
+    <select id="getRemark" resultType="com.geng.crm.settings.workbench.domain.ContactsRemark">
+        select
+        *
+        from tbl_customer_remark where customerId=#{customerId}
+    </select>
+    <delete id="deleteRemark">
+        delete from tbl_customer_remark where id=#{id}
+    </delete>
+  	<update id="updateRemark">
+        update tbl_customer_remark     set
+        noteContent=#{noteContent},
+        editBy=#{editBy},
+        editTime=#{editTime},
+        editFlag=#{editFlag}
+        where id=#{id}
+    </update>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
